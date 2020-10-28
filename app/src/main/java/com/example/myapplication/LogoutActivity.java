@@ -44,7 +44,7 @@ public class LogoutActivity extends AppCompatActivity {
         });
     }
 
-    private void logout () {
+    private void logout() {
         // log out
         ParseUser.logOutInBackground();
         // move to login screen
