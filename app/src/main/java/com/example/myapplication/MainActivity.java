@@ -7,6 +7,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Activity self = this;
     private Context root = this;
 
     public static final String TAG = "MainActivity";
@@ -55,31 +57,30 @@ public class MainActivity extends AppCompatActivity {
         botNav = findViewById(R.id.bottom_navigation);
         fragmentHolder = findViewById(R.id.layout_fragment_container);
 
-        openFragment(FeedFragment.newInstance("",""));
-        BottomNavigationView.OnNavigationItemSelectedListener navSelected = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+        openFragment(new FeedFragment());
+        botNav.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case(R.id.item_post) :
-                        openFragment(CreatePostFragment.newInstance("",""));
+                    case R.id.item_post :
+                        openFragment(new CreatePostFragment());
                         break;
-                    case(R.id.item_feed) :
-                        openFragment(FeedFragment.newInstance("",""));
+                    case R.id.item_feed :
+                        openFragment(new FeedFragment(self));
                         break;
-                    case(R.id.item_profile) :
-                        openFragment(ProfileFragment.newInstance("",""));
+                    case R.id.item_profile :
+                        openFragment(new ProfileFragment());
+                        break;
                 }
-                return false;
+                return true;
             }
-        };
-        botNav.setOnNavigationItemSelectedListener(navSelected);
+        });
     }
 
     public void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(fragmentHolder.getId(), fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(fragmentHolder.getId(), fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
